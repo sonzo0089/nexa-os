@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  <title>NEXA OS - Dashboard</title>
+  
+  <!-- PWA Meta Tags -->
+  <meta name="description" content="Your digital workspace with AI Assistant, Social Feed, Web3 Wallet, and Creator Tools">
+  <meta name="theme-color" content="#8b5cf6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="NEXA OS">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="msapplication-TileColor" content="#8b5cf6">
+  <meta name="msapplication-tap-highlight" content="no">
+  
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" href="icons/icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180x180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-167x167.png">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16x16.png">
+  
+  <!-- Manifest -->
+  <link rel="manifest" href="manifest.json">
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Login/Signup Modal -->
+  <div id="authModal" class="auth-modal">
+    <div class="auth-container">
+      <div class="auth-header">
+        <h1>NEXA OS</h1>
+        <p>Welcome to your digital workspace</p>
+      </div>
+      
+      <!-- Login Form -->
+      <form id="loginForm" class="auth-form active">
+        <h2>Login</h2>
+        <div class="form-group">
+          <input type="email" id="loginEmail" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+          <input type="password" id="loginPassword" placeholder="Password" required>
+        </div>
+        <button type="submit" class="auth-btn">Login</button>
+        <p class="auth-switch">Don't have an account? <a href="#" onclick="toggleAuth()">Sign up</a></p>
+      </form>
+
+      <!-- Signup Form -->
+      <form id="signupForm" class="auth-form">
+        <h2>Sign Up</h2>
+        <div class="form-group">
+          <input type="text" id="signupName" placeholder="Full Name" required>
+        </div>
+        <div class="form-group">
+          <input type="email" id="signupEmail" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+          <input type="password" id="signupPassword" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+          <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" required>
+        </div>
+        <button type="submit" class="auth-btn">Sign Up</button>
+        <p class="auth-switch">Already have an account? <a href="#" onclick="toggleAuth()">Login</a></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- AI Chat Interface Modal -->
+  <div id="aiChatModal" class="chat-modal">
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <button class="close-btn" onclick="closeAIChat()">×</button>
+          <h2>🤖 NEXA AI Assistant</h2>
+        </div>
+        <div class="chat-header-right">
+          <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        </div>
+      </div>
+      
+      <div class="chat-messages" id="chatMessages">
+        <div class="message ai-message">
+          <div class="message-avatar">🤖</div>
+          <div class="message-content">
+            <p>Hello! I'm your NEXA AI assistant. How can I help you today?</p>
+            <span class="message-time">Just now</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="chat-input-container">
+        <div class="chat-input-wrapper">
+          <input type="text" id="chatInput" placeholder="Ask me anything..." />
+          <button class="send-btn" onclick="sendMessage()">➤</button>
+        </div>
+        <div class="quick-actions">
+          <button class="quick-action" onclick="quickAction('help')">Help</button>
+          <button class="quick-action" onclick="quickAction('code')">Code</button>
+          <button class="quick-action" onclick="quickAction('explain')">Explain</button>
+          <button class="quick-action" onclick="quickAction('creative')">Creative</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Web3 Wallet Modal -->
+  <div id="walletModal" class="wallet-modal">
+    <div class="wallet-container">
+      <div class="wallet-header">
+        <div class="wallet-header-left">
+          <button class="close-btn" onclick="closeWallet()">×</button>
+          <h2>💰 Web3 Wallet</h2>
+        </div>
+        <div class="wallet-header-right">
+          <button class="connect-btn" id="connectBtn" onclick="connectWallet()">Connect Wallet</button>
+        </div>
+      </div>
+      
+      <div class="wallet-content">
+        <!-- Wallet Connection Status -->
+        <div class="wallet-status" id="walletStatus">
+          <div class="status-card">
+            <div class="status-icon">🔗</div>
+            <div class="status-info">
+              <h3>Wallet Status</h3>
+              <p id="statusText">Not Connected</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Balance Overview -->
+        <div class="balance-section" id="balanceSection" style="display: none;">
+          <h3>Portfolio Overview</h3>
+          <div class="balance-grid">
+            <div class="balance-card">
+              <div class="balance-icon">💎</div>
+              <div class="balance-info">
+                <h4>Total Balance</h4>
+                <p class="balance-amount" id="totalBalance">$0.00</p>
+              </div>
+            </div>
+            <div class="balance-card">
+              <div class="balance-icon">📈</div>
+              <div class="balance-info">
+                <h4>24h Change</h4>
+                <p class="balance-change" id="balanceChange">+0.00%</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Token List -->
+        <div class="tokens-section" id="tokensSection" style="display: none;">
+          <h3>Your Tokens</h3>
+          <div class="tokens-list" id="tokensList">
+            <!-- Tokens will be populated here -->
+          </div>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="transactions-section" id="transactionsSection" style="display: none;">
+          <h3>Recent Transactions</h3>
+          <div class="transactions-list" id="transactionsList">
+            <!-- Transactions will be populated here -->
+          </div>
+        </div>
+
+        <!-- Send/Receive Section -->
+        <div class="actions-section" id="actionsSection" style="display: none;">
+          <h3>Quick Actions</h3>
+          <div class="action-buttons">
+            <button class="action-btn send-btn-wallet" onclick="showSendModal()">
+              <span class="action-icon">📤</span>
+              <span>Send</span>
+            </button>
+            <button class="action-btn receive-btn-wallet" onclick="showReceiveModal()">
+              <span class="action-icon">📥</span>
+              <span>Receive</span>
+            </button>
+            <button class="action-btn swap-btn-wallet" onclick="showSwapModal()">
+              <span class="action-icon">🔄</span>
+              <span>Swap</span>
+            </button>
+            <button class="action-btn buy-btn-wallet" onclick="showWeb2PaymentsModal()">
+              <span class="action-icon">💳</span>
+              <span>Web2 Payment</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Web2 Payments Modal -->
+  <div id="web2PaymentsModal" class="web2-payments-modal" style="display: none;">
+    <div class="web2-payments-container">
+      <div class="web2-payments-header">
+        <button class="close-btn" onclick="closeWeb2PaymentsModal()">×</button>
+        <h3>Web2 Payments</h3>
+      </div>
+      <div class="web2-payments-content">
+        <p>Fund your Web3 wallet using traditional payment methods.</p>
+        <div class="web2-wallet-info">
+          <label>Your Wallet Address:</label>
+          <span id="web2WalletAddress">0x...</span>
+        </div>
+        <form id="web2PaymentForm" class="web2-payment-form">
+          <div class="form-group">
+            <label>Amount (USD)</label>
+            <input type="number" id="web2Amount" placeholder="Enter amount" min="10" step="0.01" required />
+          </div>
+          <div class="form-group">
+            <label>Payment Method</label>
+            <select id="web2PaymentMethod">
+              <option value="card">Credit/Debit Card</option>
+              <option value="paypal">PayPal</option>
+            </select>
+          </div>
+          <button type="submit" class="web2-pay-btn">Pay & Fund Wallet</button>
+        </form>
+        <div id="web2PaymentStatus"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Send Modal -->
+  <div id="sendModal" class="send-modal">
+    <div class="send-container">
+      <div class="send-header">
+        <button class="close-btn" onclick="closeSendModal()">×</button>
+        <h3>Send Tokens</h3>
+      </div>
+      <form class="send-form" id="sendForm">
+        <div class="form-group">
+          <label>Recipient Address</label>
+          <input type="text" id="recipientAddress" placeholder="0x..." required>
+        </div>
+        <div class="form-group">
+          <label>Amount</label>
+          <input type="number" id="sendAmount" placeholder="0.0" step="0.000001" required>
+        </div>
+        <div class="form-group">
+          <label>Token</label>
+          <select id="sendToken">
+            <option value="ETH">ETH</option>
+            <option value="USDC">USDC</option>
+            <option value="USDT">USDT</option>
+          </select>
+        </div>
+        <button type="submit" class="send-submit-btn">Send Transaction</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Creator Tools Modal -->
+  <div id="creatorToolsModal" class="creator-modal">
+    <div class="creator-container">
+      <div class="creator-header">
+        <div class="creator-header-left">
+          <button class="close-btn" onclick="closeCreatorTools()">×</button>
+          <h2>🎨 Creator Tools</h2>
+        </div>
+        <div class="creator-header-right">
+          <button class="theme-toggle" onclick="toggleCreatorTheme()">🌙</button>
+        </div>
+      </div>
+      
+      <div class="creator-content">
+        <!-- Tool Categories -->
+        <div class="tool-categories">
+          <button class="category-btn active" onclick="switchCategory('content')">
+            <span class="category-icon">📝</span>
+            <span>Content</span>
+          </button>
+          <button class="category-btn" onclick="switchCategory('design')">
+            <span class="category-icon">🎨</span>
+            <span>Design</span>
+          </button>
+          <button class="category-btn" onclick="switchCategory('development')">
+            <span class="category-icon">💻</span>
+            <span>Development</span>
+          </button>
+          <button class="category-btn" onclick="switchCategory('media')">
+            <span class="category-icon">🎬</span>
+            <span>Media</span>
+          </button>
+        </div>
+
+        <!-- Content Creation Tools -->
+        <div class="tools-section active" id="contentTools">
+          <h3>Content Creation Tools</h3>
+          <div class="tools-grid">
+            <div class="tool-card" onclick="openTool('textEditor')">
+              <div class="tool-icon">📄</div>
+              <h4>Text Editor</h4>
+              <p>Rich text editor with AI assistance</p>
+            </div>
+            <div class="tool-card" onclick="openTool('aiWriter')">
+              <div class="tool-icon">✍️</div>
+              <h4>AI Writer</h4>
+              <p>Generate content with AI</p>
+            </div>
+            <div class="tool-card" onclick="openTool('planner')">
+              <div class="tool-icon">📋</div>
+              <h4>Content Planner</h4>
+              <p>Plan and organize your content</p>
+            </div>
+            <div class="tool-card" onclick="openTool('translator')">
+              <div class="tool-icon">🌐</div>
+              <h4>Translator</h4>
+              <p>Translate content to multiple languages</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Design Tools -->
+        <div class="tools-section" id="designTools">
+          <h3>Design & Creative Tools</h3>
+          <div class="tools-grid">
+            <div class="tool-card" onclick="openTool('colorPalette')">
+              <div class="tool-icon">🎨</div>
+              <h4>Color Palette</h4>
+              <p>Generate and manage color schemes</p>
+            </div>
+            <div class="tool-card" onclick="openTool('imageEditor')">
+              <div class="tool-icon">🖼️</div>
+              <h4>Image Editor</h4>
+              <p>Edit and enhance images</p>
+            </div>
+            <div class="tool-card" onclick="openTool('logoMaker')">
+              <div class="tool-icon">🏷️</div>
+              <h4>Logo Maker</h4>
+              <p>Create professional logos</p>
+            </div>
+            <div class="tool-card" onclick="openTool('typography')">
+              <div class="tool-icon">🔤</div>
+              <h4>Typography</h4>
+              <p>Font pairing and text styling</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Development Tools -->
+        <div class="tools-section" id="developmentTools">
+          <h3>Development & Code Tools</h3>
+          <div class="tools-grid">
+            <div class="tool-card" onclick="openTool('codeEditor')">
+              <div class="tool-icon">💻</div>
+              <h4>Code Editor</h4>
+              <p>Advanced code editor with syntax highlighting</p>
+            </div>
+            <div class="tool-card" onclick="openTool('apiTester')">
+              <div class="tool-icon">🔌</div>
+              <h4>API Tester</h4>
+              <p>Test and debug APIs</p>
+            </div>
+            <div class="tool-card" onclick="openTool('database')">
+              <div class="tool-icon">🗄️</div>
+              <h4>Database Manager</h4>
+              <p>Manage and query databases</p>
+            </div>
+            <div class="tool-card" onclick="openTool('deployment')">
+              <div class="tool-icon">🚀</div>
+              <h4>Deployment</h4>
+              <p>Deploy your projects easily</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Media Tools -->
+        <div class="tools-section" id="mediaTools">
+          <h3>Media & Audio Tools</h3>
+          <div class="tools-grid">
+            <div class="tool-card" onclick="openTool('videoEditor')">
+              <div class="tool-icon">🎬</div>
+              <h4>Video Editor</h4>
+              <p>Edit and create videos</p>
+            </div>
+            <div class="tool-card" onclick="openTool('audioEditor')">
+              <div class="tool-icon">🎵</div>
+              <h4>Audio Editor</h4>
+              <p>Edit and enhance audio</p>
+            </div>
+            <div class="tool-card" onclick="openTool('podcast')">
+              <div class="tool-icon">🎙️</div>
+              <h4>Podcast Studio</h4>
+              <p>Record and edit podcasts</p>
+            </div>
+            <div class="tool-card" onclick="openTool('streaming')">
+              <div class="tool-icon">📺</div>
+              <h4>Streaming Setup</h4>
+              <p>Configure streaming tools</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Text Editor Tool Modal -->
+  <div id="textEditorModal" class="tool-modal">
+    <div class="tool-container">
+      <div class="tool-header">
+        <button class="close-btn" onclick="closeTool('textEditor')">×</button>
+        <h3>📄 Text Editor</h3>
+        <div class="tool-actions">
+          <button class="tool-btn" onclick="saveDocument()">💾 Save</button>
+          <button class="tool-btn" onclick="exportDocument()">📤 Export</button>
+        </div>
+      </div>
+      <div class="tool-content">
+        <div class="editor-toolbar">
+          <button class="toolbar-btn" onclick="formatText('bold')"><strong>B</strong></button>
+          <button class="toolbar-btn" onclick="formatText('italic')"><em>I</em></button>
+          <button class="toolbar-btn" onclick="formatText('underline')"><u>U</u></button>
+          <button class="toolbar-btn" onclick="insertHeading()">H1</button>
+          <button class="toolbar-btn" onclick="insertList()">• List</button>
+          <button class="toolbar-btn" onclick="insertLink()">🔗</button>
+          <button class="toolbar-btn" onclick="insertImage()">🖼️</button>
+        </div>
+        <div class="editor-area">
+          <div class="editor-sidebar">
+            <h4>AI Assistant</h4>
+            <button class="ai-btn" onclick="aiSuggest()">💡 Suggest</button>
+            <button class="ai-btn" onclick="aiImprove()">✨ Improve</button>
+            <button class="ai-btn" onclick="aiSummarize()">📝 Summarize</button>
+          </div>
+          <div class="editor-main">
+            <div class="editor" id="textEditor" contenteditable="true">
+              <h1>Welcome to NEXA Text Editor</h1>
+              <p>Start writing your content here. Use the toolbar above to format your text.</p>
+              <p>You can also use the AI assistant on the left to enhance your writing.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social Feed Modal -->
+  <div id="socialFeedModal" class="social-modal">
+    <div class="social-container">
+      <div class="social-header">
+        <div class="social-header-left">
+          <button class="close-btn" onclick="closeSocialFeed()">×</button>
+          <h2>🌟 NEXA Social</h2>
+        </div>
+        <div class="social-header-right">
+          <button class="create-post-btn" onclick="showCreatePost()">✨ Create</button>
+          <button class="theme-toggle" onclick="toggleSocialTheme()">🌙</button>
+        </div>
+      </div>
+      
+      <div class="social-content">
+        <!-- Feed Navigation -->
+        <div class="feed-nav">
+          <button class="nav-btn active" onclick="switchFeed('forYou')">
+            <span class="nav-icon">🔥</span>
+            <span>For You</span>
+          </button>
+          <button class="nav-btn" onclick="switchFeed('trending')">
+            <span class="nav-icon">📈</span>
+            <span>Trending</span>
+          </button>
+          <button class="nav-btn" onclick="switchFeed('following')">
+            <span class="nav-icon">👥</span>
+            <span>Following</span>
+          </button>
+          <button class="nav-btn" onclick="switchFeed('ai')">
+            <span class="nav-icon">🤖</span>
+            <span>AI Generated</span>
+          </button>
+        </div>
+
+        <!-- Feed Content -->
+        <div class="feed-content" id="feedContent">
+          <!-- Posts will be populated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Post Modal -->
+  <div id="createPostModal" class="create-modal">
+    <div class="create-container">
+      <div class="create-header">
+        <button class="close-btn" onclick="closeCreatePost()">×</button>
+        <h3>✨ Create Post</h3>
+        <button class="post-btn" onclick="publishPost()">Post</button>
+      </div>
+      <div class="create-content">
+        <div class="post-input-area">
+          <textarea id="postContent" placeholder="What's on your mind? Use #hashtags and @mentions..." maxlength="500"></textarea>
+          <div class="char-count">
+            <span id="charCount">0</span>/500
+          </div>
+        </div>
+        
+        <div class="post-options">
+          <button class="option-btn" onclick="openMediaPicker('image')">
+            <span class="option-icon">🖼️</span>
+            <span>Image</span>
+          </button>
+          <button class="option-btn" onclick="openMediaPicker('video')">
+            <span class="option-icon">🎬</span>
+            <span>Video</span>
+          </button>
+          <button class="option-btn" onclick="addLocation()">
+            <span class="option-icon">📍</span>
+            <span>Location</span>
+          </button>
+          <button class="option-btn" onclick="addPoll()">
+            <span class="option-icon">📊</span>
+            <span>Poll</span>
+          </button>
+        </div>
+
+        <!-- Media Preview Section -->
+        <div class="media-preview" id="mediaPreview" style="display: none;">
+          <div class="preview-header">
+            <h4>📎 Attachments</h4>
+            <button class="clear-all-btn" onclick="clearAllMedia()">Clear All</button>
+          </div>
+          <div class="preview-grid" id="previewGrid">
+            <!-- Media items will be added here -->
+          </div>
+        </div>
+
+        <!-- Location Section -->
+        <div class="location-section" id="locationSection" style="display: none;">
+          <div class="location-header">
+            <h4>📍 Location</h4>
+            <button class="remove-location-btn" onclick="removeLocation()">×</button>
+          </div>
+          <div class="location-content">
+            <div class="location-icon">📍</div>
+            <div class="location-info">
+              <h5 id="locationName">Current Location</h5>
+              <p id="locationAddress">Loading...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Poll Section -->
+        <div class="poll-section" id="pollSection" style="display: none;">
+          <div class="poll-header">
+            <h4>📊 Poll</h4>
+            <button class="remove-poll-btn" onclick="removePoll()">×</button>
+          </div>
+          <div class="poll-content">
+            <div class="poll-question">
+              <input type="text" id="pollQuestion" placeholder="Ask a question..." class="poll-input">
+            </div>
+            <div class="poll-options" id="pollOptions">
+              <div class="poll-option">
+                <input type="text" placeholder="Option 1" class="poll-option-input">
+                <button class="remove-option-btn" onclick="removePollOption(this)">×</button>
+              </div>
+              <div class="poll-option">
+                <input type="text" placeholder="Option 2" class="poll-option-input">
+                <button class="remove-option-btn" onclick="removePollOption(this)">×</button>
+              </div>
+            </div>
+            <button class="add-option-btn" onclick="addPollOption()">+ Add Option</button>
+            <div class="poll-settings">
+              <label class="poll-setting">
+                <input type="checkbox" id="multipleVotes">
+                <span class="setting-text">Allow multiple votes</span>
+              </label>
+              <label class="poll-setting">
+                <input type="checkbox" id="pollResults">
+                <span class="setting-text">Show results immediately</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-assist">
+          <h4>🤖 AI Assistant</h4>
+          <button class="ai-assist-btn" onclick="aiSuggestHashtags()"># Suggest Hashtags</button>
+          <button class="ai-assist-btn" onclick="aiImprovePost()">✨ Improve Post</button>
+          <button class="ai-assist-btn" onclick="aiGenerateContent()">🎨 Generate Content</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profileModal" class="profile-modal">
+    <div class="profile-container">
+      <div class="profile-header">
+        <button class="close-btn" onclick="closeProfile()">×</button>
+        <h2>👤 User Profile</h2>
+        <button class="edit-profile-btn" onclick="toggleEditMode()">✏️ Edit</button>
+      </div>
+      
+      <div class="profile-content">
+        <!-- Profile Header Section -->
+        <div class="profile-header-section">
+          <div class="profile-cover">
+            <div class="profile-avatar-container">
+              <div class="profile-avatar" id="profileAvatar">JS</div>
+              <button class="avatar-edit-btn" onclick="changeAvatar()">📷</button>
+            </div>
+          </div>
+          <div class="profile-info">
+            <h3 id="profileName">James Sonzo</h3>
+            <p id="profileUsername">@james_sonzo</p>
+            <p id="profileBio">Digital creator and tech enthusiast. Building the future of social media with NEXA OS! 🚀</p>
+            <div class="profile-stats">
+              <div class="stat-item">
+                <span class="stat-number">1.2K</span>
+                <span class="stat-label">Followers</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">856</span>
+                <span class="stat-label">Following</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">234</span>
+                <span class="stat-label">Posts</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Navigation -->
+        <div class="profile-nav">
+          <button class="profile-nav-btn active" onclick="switchProfileTab('overview')">
+            <span class="nav-icon">📊</span>
+            <span>Overview</span>
+          </button>
+          <button class="profile-nav-btn" onclick="switchProfileTab('posts')">
+            <span class="nav-icon">📝</span>
+            <span>Posts</span>
+          </button>
+          <button class="profile-nav-btn" onclick="switchProfileTab('media')">
+            <span class="nav-icon">🖼️</span>
+            <span>Media</span>
+          </button>
+          <button class="profile-nav-btn" onclick="switchProfileTab('settings')">
+            <span class="nav-icon">⚙️</span>
+            <span>Settings</span>
+          </button>
+        </div>
+
+        <!-- Profile Tab Content -->
+        <div class="profile-tab-content">
+          <!-- Overview Tab -->
+          <div class="profile-tab active" id="overviewTab">
+            <div class="overview-section">
+              <h4>📈 Activity Overview</h4>
+              <div class="activity-grid">
+                <div class="activity-card">
+                  <div class="activity-icon">📊</div>
+                  <div class="activity-info">
+                    <h5>Profile Views</h5>
+                    <p>2.4K this month</p>
+                  </div>
+                </div>
+                <div class="activity-card">
+                  <div class="activity-icon">❤️</div>
+                  <div class="activity-info">
+                    <h5>Total Likes</h5>
+                    <p>8.7K received</p>
+                  </div>
+                </div>
+                <div class="activity-card">
+                  <div class="activity-icon">💬</div>
+                  <div class="activity-info">
+                    <h5>Comments</h5>
+                    <p>1.2K interactions</p>
+                  </div>
+                </div>
+                <div class="activity-card">
+                  <div class="activity-icon">📤</div>
+                  <div class="activity-info">
+                    <h5>Shares</h5>
+                    <p>456 reposts</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="overview-section">
+              <h4>🏆 Achievements</h4>
+              <div class="achievements-grid">
+                <div class="achievement-badge">
+                  <span class="badge-icon">🌟</span>
+                  <span class="badge-name">Early Adopter</span>
+                </div>
+                <div class="achievement-badge">
+                  <span class="badge-icon">🎨</span>
+                  <span class="badge-name">Creator</span>
+                </div>
+                <div class="achievement-badge">
+                  <span class="badge-icon">🤖</span>
+                  <span class="badge-name">AI Explorer</span>
+                </div>
+                <div class="achievement-badge">
+                  <span class="badge-icon">💎</span>
+                  <span class="badge-name">Premium User</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Posts Tab -->
+          <div class="profile-tab" id="postsTab">
+            <div class="posts-header">
+              <h4>📝 Your Posts</h4>
+              <button class="create-post-btn-small" onclick="createNewPost()">+ New Post</button>
+            </div>
+            <div class="user-posts-grid" id="userPostsGrid">
+              <!-- User posts will be populated here -->
+            </div>
+          </div>
+
+          <!-- Media Tab -->
+          <div class="profile-tab" id="mediaTab">
+            <div class="media-header">
+              <h4>🖼️ Your Media</h4>
+              <div class="media-filter">
+                <button class="filter-btn active" onclick="filterMedia('all')">All</button>
+                <button class="filter-btn" onclick="filterMedia('images')">Images</button>
+                <button class="filter-btn" onclick="filterMedia('videos')">Videos</button>
+              </div>
+            </div>
+            <div class="media-grid" id="mediaGrid">
+              <!-- User media will be populated here -->
+            </div>
+          </div>
+
+          <!-- Settings Tab -->
+          <div class="profile-tab" id="settingsTab">
+            <div class="settings-section">
+              <h4>👤 Account Settings</h4>
+              <form class="settings-form" id="profileSettingsForm">
+                <div class="form-group">
+                  <label>Display Name</label>
+                  <input type="text" id="settingsName" value="James Sonzo">
+                </div>
+                <div class="form-group">
+                  <label>Username</label>
+                  <input type="text" id="settingsUsername" value="@james_sonzo">
+                </div>
+                <div class="form-group">
+                  <label>Bio</label>
+                  <textarea id="settingsBio" rows="3">Digital creator and tech enthusiast. Building the future of social media with NEXA OS! 🚀</textarea>
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" id="settingsEmail" value="james@nexa.com">
+                </div>
+                <button type="submit" class="save-settings-btn">💾 Save Changes</button>
+              </form>
+            </div>
+
+            <div class="settings-section">
+              <h4>🔒 Privacy & Security</h4>
+              <div class="privacy-options">
+                <div class="privacy-option">
+                  <label class="toggle-label">
+                    <input type="checkbox" id="privateProfile" checked>
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-text">Private Profile</span>
+                  </label>
+                </div>
+                <div class="privacy-option">
+                  <label class="toggle-label">
+                    <input type="checkbox" id="showOnlineStatus">
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-text">Show Online Status</span>
+                  </label>
+                </div>
+                <div class="privacy-option">
+                  <label class="toggle-label">
+                    <input type="checkbox" id="allowMessages" checked>
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-text">Allow Direct Messages</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <h4>🎨 Appearance</h4>
+              <div class="theme-options">
+                <button class="theme-btn active" onclick="setTheme('light')">☀️ Light</button>
+                <button class="theme-btn" onclick="setTheme('dark')">🌙 Dark</button>
+                <button class="theme-btn" onclick="setTheme('auto')">🔄 Auto</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app" id="dashboard" style="display: none;">
+    <!-- Fixed Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <h1 class="logo">NEXA</h1>
+      </div>
+      
+      <div class="header-center">
+        <div class="search-container">
+          <div class="search-icon">🔍</div>
+          <input type="text" placeholder="Search NEXA..." class="search-input" />
+          <button class="search-btn">Search</button>
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <div class="profile" onclick="openProfile()">JS</div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-main">
+      <div class="welcome-section">
+        <h2>Welcome back, James! 👋</h2>
+        <p>What would you like to do today?</p>
+      </div>
+
+      <section class="dashboard-grid">
+        <div class="dashboard-card" onclick="openAIChat()">
+          <div class="card-icon">🤖</div>
+          <h3>AI Assistant</h3>
+          <p>Get help with anything using AI</p>
+        </div>
+        
+        <div class="dashboard-card" onclick="openSocialFeed()">
+          <div class="card-icon">🌟</div>
+          <h3>Social Feed</h3>
+          <p>Connect with your community</p>
+        </div>
+        
+        <div class="dashboard-card" onclick="openWallet()">
+          <div class="card-icon">💰</div>
+          <h3>Web3 Wallet</h3>
+          <p>Manage your digital assets</p>
+        </div>
+        
+        <div class="dashboard-card" onclick="openCreatorTools()">
+          <div class="card-icon">🎨</div>
+          <h3>Creator Tools</h3>
+          <p>Build amazing content</p>
+        </div>
+      </section>
+
+      <!-- Recent Activity Section -->
+      <section class="recent-activity">
+        <h3>📊 Recent Activity</h3>
+        <div class="activity-cards">
+          <div class="activity-card">
+            <div class="activity-icon">🤖</div>
+            <div class="activity-content">
+              <h4>AI Chat Session</h4>
+              <p>You had a 15-minute conversation with AI Assistant</p>
+              <span class="activity-time">2 hours ago</span>
+            </div>
+          </div>
+          
+          <div class="activity-card">
+            <div class="activity-icon">🌟</div>
+            <div class="activity-content">
+              <h4>New Post Published</h4>
+              <p>Your post received 23 likes and 5 comments</p>
+              <span class="activity-time">1 day ago</span>
+            </div>
+          </div>
+          
+          <div class="activity-card">
+            <div class="activity-icon">💰</div>
+            <div class="activity-content">
+              <h4>Wallet Transaction</h4>
+              <p>Received 0.5 ETH from @alex_creator</p>
+              <span class="activity-time">3 days ago</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Fixed Footer Navigation -->
+    <footer class="dashboard-footer">
+      <nav class="footer-nav">
+        <button class="footer-nav-item active" onclick="openAIChat()">
+          <div class="nav-icon">🤖</div>
+          <span>AI Assistant</span>
+        </button>
+        
+        <button class="footer-nav-item" onclick="openSocialFeed()">
+          <div class="nav-icon">🌟</div>
+          <span>Social</span>
+        </button>
+        
+        <button class="footer-nav-item" onclick="openWallet()">
+          <div class="nav-icon">💰</div>
+          <span>Wallet</span>
+        </button>
+        
+        <button class="footer-nav-item" onclick="openCreatorTools()">
+          <div class="nav-icon">🎨</div>
+          <span>Tools</span>
+        </button>
+      </nav>
+    </footer>
+  </div>
+
+  <!-- File Upload Modal -->
+  <div id="fileUploadModal" class="file-upload-overlay">
+    <div class="file-upload-modal">
+      <h3 id="uploadModalTitle">Add Media</h3>
+      <div class="upload-options">
+        <div class="upload-option" onclick="selectUploadSource('camera')">
+          <div class="upload-icon">📷</div>
+          <div class="upload-text">
+            <h4>Camera</h4>
+            <p>Take a photo or record video</p>
+          </div>
+        </div>
+        <div class="upload-option" onclick="selectUploadSource('gallery')">
+          <div class="upload-icon">🖼️</div>
+          <div class="upload-text">
+            <h4>Gallery</h4>
+            <p>Choose from your photos</p>
+          </div>
+        </div>
+        <div class="upload-option" onclick="selectUploadSource('files')">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">
+            <h4>Files</h4>
+            <p>Browse your device storage</p>
+          </div>
+        </div>
+      </div>
+      <div class="upload-actions">
+        <button class="upload-btn secondary" onclick="closeFileUploadModal()">Cancel</button>
+        <button class="upload-btn primary" id="uploadConfirmBtn" onclick="confirmUpload()" style="display: none;">Upload</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden file inputs -->
+  <input type="file" id="imageInput" class="hidden-file-input" accept="image/*" multiple>
+  <input type="file" id="videoInput" class="hidden-file-input" accept="video/*" multiple>
+  <input type="file" id="mediaInput" class="hidden-file-input" accept="image/*,video/*" multiple>
+
+  <script src="script.js"></script>
+  <script>
+    function showWeb2PaymentsModal() {
+      document.getElementById('web2PaymentsModal').style.display = 'block';
+      // Set wallet address (replace with actual logic)
+      document.getElementById('web2WalletAddress').textContent = typeof getCurrentWalletAddress === 'function' ? getCurrentWalletAddress() : '0x...';
+    }
+    function closeWeb2PaymentsModal() {
+      document.getElementById('web2PaymentsModal').style.display = 'none';
+    }
+    document.getElementById('web2PaymentForm') && document.getElementById('web2PaymentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      document.getElementById('web2PaymentStatus').textContent = 'Processing payment (mock)...';
+      setTimeout(() => {
+        document.getElementById('web2PaymentStatus').textContent = 'Payment successful! Funds will appear in your wallet shortly.';
+      }, 2000);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{
+  "name": "nexa-os",
+  "version": "1.0.0",
+  "description": "A modern Progressive Web App (PWA) that combines AI Assistant, Social Feed, Web3 Wallet, and Creator Tools in one seamless platform.",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve . -p 8000",
+    "dev": "npx live-server --port=8000 --open=/",
+    "build": "echo 'No build step required for static PWA'",
+    "deploy": "echo 'Deploy to your preferred hosting service'",
+    "test": "echo 'Add your test commands here'",
+    "lighthouse": "npx lighthouse http://localhost:8000 --output=html --output-path=./lighthouse-report.html",
+    "pwa-check": "npx @web/pwa-checker index.html"
+  },
+  "keywords": [
+    "pwa",
+    "progressive-web-app",
+    "mobile-app",
+    "ai-assistant",
+    "social-feed",
+    "web3-wallet",
+    "creator-tools",
+    "javascript",
+    "html5",
+    "css3"
+  ],
+  "author": "NEXA OS Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/nexa-os.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/nexa-os/issues"
+  },
+  "homepage": "https://yourusername.github.io/nexa-os",
+  "devDependencies": {
+    "serve": "^14.2.0",
+    "live-server": "^1.2.2",
+    "lighthouse": "^11.0.0",
+    "@web/pwa-checker": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+} 

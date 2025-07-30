@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXA OS - Offline</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    
+    .offline-container {
+      text-align: center;
+      padding: 40px;
+      max-width: 400px;
+    }
+    
+    .offline-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      margin: 0 0 20px 0;
+    }
+    
+    p {
+      font-size: 1.1rem;
+      margin: 0 0 30px 0;
+      opacity: 0.9;
+      line-height: 1.5;
+    }
+    
+    .retry-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    
+    .retry-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .offline-features {
+      margin-top: 40px;
+      text-align: left;
+    }
+    
+    .offline-features h3 {
+      margin: 0 0 15px 0;
+      font-size: 1.2rem;
+    }
+    
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .feature-list li {
+      margin: 10px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    
+    .feature-list li:before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #4ade80;
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">📡</div>
+    <h1>You're Offline</h1>
+    <p>Don't worry! NEXA OS works offline too. Some features may be limited, but you can still access your cached content.</p>
+    
+    <button class="retry-btn" onclick="window.location.reload()">
+      🔄 Try Again
+    </button>
+    
+    <div class="offline-features">
+      <h3>Available Offline:</h3>
+      <ul class="feature-list">
+        <li>View cached posts and media</li>
+        <li>Access your profile</li>
+        <li>Use AI Assistant (limited)</li>
+        <li>View wallet information</li>
+        <li>Create drafts (will sync when online)</li>
+      </ul>
+    </div>
+  </div>
+  
+  <script>
+    // Check for network connection
+    window.addEventListener('online', function() {
+      window.location.reload();
+    });
+    
+    // Auto-retry every 30 seconds
+    setInterval(() => {
+      if (navigator.onLine) {
+        window.location.reload();
+      }
+    }, 30000);
+  </script>
+</body>
+</html> 
